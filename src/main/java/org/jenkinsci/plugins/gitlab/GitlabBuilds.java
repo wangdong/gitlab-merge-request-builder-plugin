@@ -1,13 +1,14 @@
 package org.jenkinsci.plugins.gitlab;
 
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import hudson.model.AbstractBuild;
 import hudson.model.Cause;
 import hudson.model.Result;
 import hudson.model.queue.QueueTaskFuture;
 import jenkins.model.Jenkins;
+
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class GitlabBuilds {
     private static final Logger _logger = Logger.getLogger(GitlabBuilds.class.getName());
@@ -20,7 +21,7 @@ public class GitlabBuilds {
     }
 
     public String build(GitlabMergeRequestWrapper mergeRequest) {
-        GitlabCause cause = new GitlabCause(mergeRequest.getId(), mergeRequest.getSource(), mergeRequest.getTarget());
+        GitlabCause cause = new GitlabCause(mergeRequest.getId(), mergeRequest.getIid(), mergeRequest.getSource(), mergeRequest.getTarget());
 
         QueueTaskFuture<?> build = _trigger.startJob(cause);
         if (build == null) {
@@ -49,7 +50,7 @@ public class GitlabBuilds {
         }
 
         try {
-            build.setDescription("<a href=\"" + _repository.getMergeRequestUrl(cause.getMergeRequestId()) + "\">" + getOnStartedMessage(cause) + "</a>");
+            build.setDescription("<a href=\"" + _repository.getMergeRequestUrl(cause.getMergeRequestIid()) + "\">" + getOnStartedMessage(cause) + "</a>");
         } catch (IOException e) {
             _logger.log(Level.SEVERE, "Can't update build description", e);
         }
@@ -76,6 +77,6 @@ public class GitlabBuilds {
     }
 
     private String getOnStartedMessage(GitlabCause cause) {
-        return "Merge Request #" + cause.getMergeRequestId() + " (" + cause.getSourceBranch() + " => " + cause.getTargetBranch() + ")";
+        return "Merge Request #" + cause.getMergeRequestIid() + " (" + cause.getSourceBranch() + " => " + cause.getTargetBranch() + ")";
     }
 }

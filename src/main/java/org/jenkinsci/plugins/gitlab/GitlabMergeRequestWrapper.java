@@ -1,21 +1,23 @@
 package org.jenkinsci.plugins.gitlab;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.gitlab.api.GitlabAPI;
 import org.gitlab.api.models.GitlabCommit;
 import org.gitlab.api.models.GitlabMergeRequest;
 import org.gitlab.api.models.GitlabNote;
 import org.gitlab.api.models.GitlabProject;
 
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class GitlabMergeRequestWrapper {
 
     private static final Logger _logger = Logger.getLogger(GitlabMergeRequestWrapper.class.getName());
     private final Integer _id;
+    private final Integer _iid;
     private final String _author;
     private String _source;
     private String _target;
@@ -27,7 +29,11 @@ public class GitlabMergeRequestWrapper {
 
 
     GitlabMergeRequestWrapper(GitlabMergeRequest mergeRequest, GitlabMergeRequestBuilder builder, GitlabProject project) {
+        Logger.getGlobal().warning("++++++++++++++++++++++++++" + mergeRequest.getIid().toString());
+        Logger.getGlobal().info("++++++++++++++++++++++++++" + mergeRequest.getIid().toString());
+
         _id = mergeRequest.getId();
+        _iid = mergeRequest.getIid();
         _author = mergeRequest.getAuthor().getUsername();
         _source = mergeRequest.getSourceBranch();
         _target = mergeRequest.getTargetBranch();
@@ -111,6 +117,8 @@ public class GitlabMergeRequestWrapper {
     public Integer getId() {
         return _id;
     }
+
+    public Integer getIid() { return _iid; }
 
     public String getAuthor() {
         return _author;
